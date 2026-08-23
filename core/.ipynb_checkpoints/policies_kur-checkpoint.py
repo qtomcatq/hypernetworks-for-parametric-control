@@ -71,8 +71,8 @@ class tHNC_strategy(nn.Module):
         self.dim=dim
         self.clip=clip  
             
-        self.polyf = MLPL(in_size=3*dim, out_size=dim,layers=(2*dim+1,)*1,act=act)        
-        self.hhnet = Hypernetwork( hyper_dims = 1, target_network = self.polyf, layers=(dim,)*layers+(1,), hyperfan=True, act=act)
+        self.polyf = MLPL(in_size=3*dim, out_size=dim,layers=(int(dim)+1,)*1,act=act)        
+        self.hhnet = Hypernetwork( hyper_dims = 1, target_network = self.polyf, layers=(int(dim),)*layers+(1,), hyperfan=True, act=act)
      
         self.device=device
 
@@ -81,14 +81,14 @@ class tHNC_strategy(nn.Module):
         
         ts=torch.full((1, 1), t).to(self.device)
         tss=ts.repeat(self.batch,1)
-        generated_vmap_params= (torch.vmap(self.hhnet.generate_params)(tss)).clamp_(-self.clip, self.clip)
-
+   
+        generated_vmap_params= self.hhnet.generate_params(ts)
         xtr=torch.cos(y[:,0:self.dim])
         ytr=torch.sin(y[:,0:self.dim])
         input=torch.cat([xtr,ytr,freqs],axis=1)
-       
-        cforce = torch.vmap(self.hhnet.forward)(input,generated_vmap_params )
-
+     
+      
+        cforce = self.hhnet.forward(input,generated_vmap_params)
         return cforce 
 
 
