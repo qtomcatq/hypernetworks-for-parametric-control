@@ -1,0 +1,20 @@
+# JAX ecosystem
+jax
+jaxlib
+equinox
+optax
+distrax
+
+# PyTorch ecosystem
+torch
+torchvision
+torchaudio
+adabelief-pytorch
+
+# Visualization / notebooks
+matplotlib
+tqdm
+ipython
+
+# Utilities
+dataclasses; python_version < "3.7"
